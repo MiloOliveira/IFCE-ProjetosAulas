@@ -1,60 +1,110 @@
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <stdlib.h>
-#include "Words.txt"
-#define WordSize 12
+#include <time.h>
+#include <ctype.h>
+#include "HangedMan.h"
+#define MaxCharacter 12
 
+char HangedManWord[MaxCharacter];
+char Guess;
 
-char WordSelected[WordSize];
-int WordLength;
+int WordSelectedSize;
+int HangedManCheck[MaxCharacter] = {0};
 
-
-
-void WordGet() {
-     int WordsAmount, RandomSelectedWord;
-     
-     FILE* f;
-     f = fopen("Words.txt", "r+");
-     if(f == 0) {
-          printf("Banco de dados de palavras não disponível \n");
-     }
-     fscanf(f,"%d", &WordsAmount);
-     RandomSelectedWord = rand() % WordsAmount;
-     for (int i = 0; i < RandomSelectedWord; i++) {
-          fscanf(f, "%s", &WordSelected);
-     }
-     fclose(f);
-
-     WordLength = strlen(WordSelected);
-}
 
 int main() {
-     srand(time(NULL));
-     int LetterDiscovered[WordSize] = {0};
-     char LetterGuess;
-     int Won, Tries;
+     int Win, Hanged;
+     int HP = 6; 
+     int RoundHitCheck;
+    
+    //Escolhe uma palavra
+    srand(time(0));
+    WordChoser();
+    WordSelectedSize = strlen(HangedManWord);
+    
+    Win = WordSelectedSize;
+    do {
+        //Imprime a palavra na Tela, com letras já descobertas e espaços em branco
+        for (int bb = 0; bb < WordSelectedSize; bb++) {
+            if (HangedManCheck[bb] == 0) {
+                printf ("_ ");
+            } else {
+                printf("%c ",HangedManWord[bb]);
+            }
+        } 
+        printf("\n");
+        
+       // do {
+          printf("Escolha uma letra \n");
+          scanf(" %c", &Guess);
+          Guess = toupper(Guess);
+      //  LetterAlreadyUsed();
+      //  } while (LetterAlreadyUsed());
 
-     
-     do {
-          printf("Escreva uma letra para chutar");
-          scanf(" %c", &LetterGuess);
-          for (int i = 0; i < WordLength; i++) {
-               if (WordSelected[i] == LetterGuess) {
-                    LetterDiscovered[i] = 1;
-               }
+        
+        //Contagem se houve acerto ou não
+        RoundHitCheck = 0;
+        for (int aa = 0; aa < WordSelectedSize; aa++) {
+            if (Guess == HangedManWord[aa]) {
+                HangedManCheck[aa] = 1;
+                RoundHitCheck = 1;
+                Win-=1;
+            }
+        } 
+
+        printf("\n  %d \n", Win);
+        if (RoundHitCheck == 0) {
+            HP--;
+            printf("Letra errada! Tentativas restantes: %d\n", HP);
+        }    
+
+    } while (HP > 0 && Win > 0);
+
+    if (HP == 0) {
+        printf("Você perdeu! A palavra era: %s\n", HangedManWord);
+    }
+
+    return 0;
+}
+
+
+void WordChoser() {
+     int MaxWords;
+
+     FILE* f;
+     f = fopen("d:\\Semestre 1\\HangMan\\HangedMan\\Words.txt","r");
+     if(f == NULL) {
+          printf("Banco de dados de palavras não disponível\n");
+          exit(1);
+     }
+     fscanf(f, "%d", &MaxWords);
+
+     int  WordSelected = rand() % MaxWords;
+     for (int i = 0; i < WordSelected; i++) {
+          fscanf(f, "%s", HangedManWord);
+     }
+
+     fclose(f);
+}
+
+/*
+
+char PreviousGuesses[26] = {0};
+int LetterAlreadyUsed() {
+     for (int i = 0; i < 26; i++) {
+          if (PreviousGuesses[i] == '\0') {
+               PreviousGuesses[i] = Guess;
+               return 0;
+          } else if (PreviousGuesses[i] == Guess) {
+               printf("Letra já chutada antes. Escolha outra \n");
+               Guess = '\0';
+               return 1;
+          } else {
+               continue;
           }
-
-          for (int i = 0; i < WordLength; i++){
-               if (LetterDiscovered[i] == 1) {
-                    printf("%c ", WordSelected[i]);
-               } else {
-                    printf("_ ");
-               }
-          }
-
-     } while (Won != 1 || Tries != 0);
-
-
+     };
      return 0;
 }
+
+*/
