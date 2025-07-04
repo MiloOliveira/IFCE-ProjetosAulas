@@ -1,3 +1,9 @@
 void WordChoser();
 void EndGame();
 int LetterAlreadyUsed();
+void RegisterNewWord();
+void PrintTower();
+void Dificulty();
+void CheckNewWord();
+void PointCount();
+void CravingRank();

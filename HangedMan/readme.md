@@ -1,10 +1,8 @@
 Adicionado o básico.
 
 Restante:
-Desenho da forca
+Checagem da palavra nova a ser inserida
 
-Sistema de HP
-Inserção de palavra nova e dificuldade
-Ranking
+
 
 
